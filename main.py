@@ -5,6 +5,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.base import Builder
@@ -13,26 +14,61 @@ from kivy.uix.popup import Popup
 Window.clearcolor = (1,1,1)  # Branco
 Window.size = (500,700)
 
+dados1 = {
+    "Turmas": ["1111", "1112", "1113"]
+}
+
+dados2 = {
+    "Disciplinas": ["Matemática", "Português", "História"]
+}
+
+df1 = pd.DataFrame(dados1)
+df2 = pd.DataFrame(dados2)
+
+nome_arquivo = "dados.xlsx"
+
+with pd.ExcelWriter(nome_arquivo) as writer:
+    df1.to_excel(writer, sheet_name='turmas', index=False)
+    df2.to_excel(writer, sheet_name='disciplinas', index=False)
+
 turmas_df = pd.read_excel('dados.xlsx', sheet_name='turmas')
 disciplinas_df = pd.read_excel('dados.xlsx', sheet_name='disciplinas')
 
 class HomeScreen(Screen):
     pass
 
-class TurmasScreen(Screen):
-    def show_disciplinas(self, turma):
-        disciplinas = disciplinas_df[disciplinas_df['ID_Turma'] == turma]['Disciplina'].tolist()
-        content = FloatLayout(orientation='vertical')
-        
-        for disciplina in disciplinas:
-            content.add_widget(Label(text=disciplina))
-        
-        close_button = Button(text='Fechar', size_hint=(1, 0.2))
-        content.add_widget(close_button)
-        
-        popup = Popup(title=f'Disciplinas da Turma {turma}', content=content, size_hint=(0.8, 0.8))
-        close_button.bind(on_release=popup.dismiss)
+class GridTurmas(GridLayout):
+    def __init__(self, **kwargs):
+        super(GridTurmas, self).__init__(**kwargs)
+        self.cols = 3
+        self.spacing = 10
+        self.padding = 10
+        self.size_hint = (None, None)
+        self.size = (200, 200)
+
+        nome_arquivo = "dados.xlsx"
+
+        self.df = pd.read_excel(nome_arquivo)
+
+        for index, row in self.df.iterrows():
+            btn = Button(text=str(row['Turmas']),
+                         size_hint=(None, None),
+                         size=(100, 40))
+            btn.bind(on_press=self.show_info)
+            self.add_widget(btn)
+
+    def show_info(self, instance):
+        turma = instance.text
+        info = self.df[self.df['Turmas'] == turma].iloc[0]
+
+        info_text = f"Turmas: {info['Turmas']}"
+        popup = Popup(title='Informações',
+                      content=Label (text=info_text),
+                      size_hint=(None, None), size=(300, 200))
         popup.open()
+
+class TurmasScreen(Screen):
+    pass
               
 class Nova(Screen):
     pass

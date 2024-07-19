@@ -69,6 +69,13 @@ ScreenManager:
             on_release:
                 app.root.current = 'configuracoes'
 
+<GridTurmas>:
+    cols: 3
+    spacing: 10
+    padding: 10
+    size_hint: None, None
+    size: 200, 200
+
 <TurmasScreen>:
     name: 'turmas'
     FloatLayout:                
@@ -86,25 +93,6 @@ ScreenManager:
             color: 0, 0, 0, 1
             on_release:
                 app.root.current = 'nova'
-
-        Button:
-            text: "Turma 1"
-            size_hint: None, None
-            size: 200, 50
-            pos_hint: {'x': 0.1, 'y': 0.7}
-            on_release: root.show_disciplinas(1)
-        Button:
-            text: "Turma 2"
-            size_hint: None, None
-            size: 200, 50
-            pos_hint: {'x': 0.1, 'y': 0.5}
-            on_release: root.show_disciplinas(2)
-        Button:
-            text: "Turma 3"
-            size_hint: None, None
-            size: 200, 50
-            pos_hint: {'x': 0.1, 'y': 0.3}
-            on_release: root.show_disciplinas(3)
             
         Button:
             text: 'Voltar'
@@ -114,6 +102,10 @@ ScreenManager:
             color: 0, 0, 0, 1
             on_release:
                 app.root.current = 'home'
+    
+        GridTurmas:
+            id: grid_turmas
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
 
 <DisciplinasScreen>:
     name: 'disciplinas'            
