@@ -8,6 +8,42 @@ ScreenManager:
     NotificacoesScreen:
     NovaScreen:
 
+<LoginScreen>:
+    name: 'login'
+    FloatLayout:
+        Image:
+            size_hint: .3, .3
+            pos_hint: {"center_x": .5, "center_y": .75}
+            source: 'escola_icon.png'
+
+        GridLayout:
+            cols: 1
+            spacing: 5
+            size_hint: .7, .37
+            pos_hint: {"center_x": .5, "center_y": .3}
+
+            TextInput:
+                id: username
+                hint_text: 'Username'
+                multiline: False
+
+            TextInput:
+                id: password
+                hint_text: 'Password'
+                password: True
+                multiline: False
+
+            Button:
+                text: 'Login'
+                background_color: 0,191,255, 1
+                color: 0, 0, 0, 1
+                on_press: app.verify_login(username.text, password.text)
+
+            Label:
+                id: message
+                text: ''
+                color: 1, 0, 0, 1
+
 <HomeScreen>:
     name: 'home'
     FloatLayout:                          
@@ -68,6 +104,12 @@ ScreenManager:
             color: 0, 0, 0, 1
             on_release:
                 app.root.current = 'configuracoes'
+
+        Button:
+            text: 'Logout'
+            size_hint: .11, .08
+            pos_hint: {"center_x": .8, "center_y": .15}
+            on_press: app.logout()
 
 <GridTurmas>:
     cols: 3
