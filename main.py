@@ -34,6 +34,9 @@ with pd.ExcelWriter(nome_arquivo) as writer:
 turmas_df = pd.read_excel('dados.xlsx', sheet_name='turmas')
 disciplinas_df = pd.read_excel('dados.xlsx', sheet_name='disciplinas')
 
+class LoginScreen(Screen):
+    pass
+
 class HomeScreen(Screen):
     pass
 
@@ -93,10 +96,33 @@ class NovaScreen(Screen):
 
 class MainApp(App):
     def build(self):
-        return Builder.load_file('main.kv')
-        sm = ScreenManager()
-        sm.add_widget(TurmasScreen(name='turmas'))
-        return sm
+        Builder.load_file('main.kv')
+        self.screen_manager = ScreenManager()
+        self.screen_manager.add_widget(LoginScreen(name='login'))
+        self.screen_manager.add_widget(HomeScreen(name='home'))
+        self.screen_manager.add_widget(TurmasScreen(name='turmas'))
+        self.screen_manager.add_widget(DisciplinasScreen(name='disciplinas'))
+        self.screen_manager.add_widget(ProfessoresScreen(name='professores'))
+        self.screen_manager.add_widget(GradeScreen(name='grade'))
+        self.screen_manager.add_widget(ConfiguracoesScreen(name='configuracoes'))
+        self.screen_manager.add_widget(NotificacoesScreen(name='notificacoes'))
+        self.screen_manager.add_widget(NovaScreen(name='nova'))
+        return self.screen_manager
+
+    def verify_login(self, username, password):
+        if username == 'admin' and password == '12345':
+            self.screen_manager.current = 'home'
+        else:
+            login_screen = self.screen_manager.get_screen('login')
+            login_screen.ids.message.text = 'Usuário ou senha inválidos.'
+            login_screen.ids.message.color = 1, 0, 0, 1
+
+    def logout(self):
+        self.screen_manager.current = 'login'
+        login_screen = self.screen_manager.get_screen('login')
+        login_screen.ids.username.text = ''
+        login_screen.ids.password.text = ''
+        login_screen.ids.message.text = ''
 
 if __name__ == '__main__':
     MainApp().run()
